@@ -4,6 +4,6 @@ run:
 gunicorn main:application
 
 
-/ - index/ - Главная
-/page/ - Просто страница
-/contact/ - Контакты
+/ - index/ - index
+/page/ - page
+/contact/ - contact
