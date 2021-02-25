@@ -1,4 +1,19 @@
+import quopri
+
+
 class Application:
+
+    def decode_value(val):
+        val_b = bytes(val.replace('%', '=').replace("+", " "), 'UTF-8')
+        val_decode_str = quopri.decodestring(val_b)
+        return val_decode_str.decode('UTF-8')
+
+    def add_route(self, url):
+        # паттерн декоратор
+        def inner(view):
+            self.urlpatterns[url] = view
+
+        return inner
 
     def parse_input_data(self, data: str):
         result = {}
@@ -13,8 +28,6 @@ class Application:
     def parse_wsgi_input_data(self, data: bytes):
         result = {}
         if data:
-            # print('data_type', type(data))
-            # print(data)
             data_str = data.decode(encoding='utf-8')
             result = self.parse_input_data(data_str)
         return result
