@@ -1,10 +1,4 @@
-# Установка
-# pip install uwsgi
-
-# Запуск
-# uwsgi --http :8000 --wsgi-file simple_wsgi_server.py
-# gunicorn simple_wsgi_server.py
-from frame import Application, render, DebugApplication, MockApplication
+from frame import render, Application, DebugApplication, FakeApplication
 from models import TrainingSite
 from logging_mod import Logger, debug
 
@@ -28,7 +22,7 @@ def create_course(request):
         data = request['data']
         name = data['name']
         category_id = data.get('category_id')
-        print(category_id)
+        # print(category_id)
         category = None
         if category_id:
             category = site.find_category_by_id(int(category_id))
@@ -50,6 +44,8 @@ def create_category(request):
         data = request['data']
         # print(data)
         name = data['name']
+
+        name = Application.decode_value(name)
         category_id = data.get('category_id')
 
         category = None
@@ -57,6 +53,7 @@ def create_category(request):
             category = site.find_category_by_id(int(category_id))
 
         new_category = site.create_category(name, category)
+
         site.categories.append(new_category)
         # редирект?
         # return '302 Moved Temporarily', render('create_course.html')
@@ -82,16 +79,16 @@ front_controllers = [
     secret_controller
 ]
 
-# application = Application(urlpatterns, front_controllers)
-# proxy
-# application = DebugApplication(urlpatterns, front_controllers)
-application = MockApplication(urlpatterns, front_controllers)
+application = Application(urlpatterns, front_controllers)
+
+
+#application = DebugApplication(urlpatterns, front_controllers)
+#application = FakeApplication(urlpatterns, front_controllers)
 
 
 @application.add_route('/copy-course/')
 def copy_course(request):
     request_params = request['request_params']
-    # print(request_params)
     name = request_params['name']
     old_course = site.get_course(name)
     if old_course:
