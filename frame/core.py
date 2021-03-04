@@ -101,6 +101,6 @@ class FakeApplication(Application):
         self.application = Application(urlpatterns, front_controllers)
         super().__init__(urlpatterns, front_controllers)
 
-    def __call__(self, env, start_response):
-        start_response('200 OK', [('Content-Type', 'text/html')])
+    def __call__(self, env, start_answer):
+        start_answer('200 OK', [('Content-Type', 'text/html')])
         return [b'Hello from Fake']
